@@ -90,15 +90,18 @@ def load_mat_file( mat_fullpath, var_name='Psi_ts'):
     # usually we are loading stream function values, so default 
     # var_name to 'Psi_ts', but subject to change
     try:
-        mat = io.loadmat(mat_fullpath)[var_name]
+        if mat_fullpath[-4:] == '.mat': 
+            print(mat_fullpath)
+            mat = io.loadmat(mat_fullpath[:-4])[var_name]
     except NotImplementedError as e: 
+        raise Exception("THIS DOESN'T WORK..!!")
         print(e) 
         import h5py
         with h5py.File(mat_fullpath, 'r') as file:
             mat = np.asarray(file['Psi_ts'])
             mat = mat.reshape(mat.shape[2], mat.shape[1], mat.shape[0])
             print(f'loaded mat file, shape: {mat.shape}')
-    return mat 
+    return mat
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -1,6 +1,7 @@
-.ipynb_checkpoints/
-__pycache__/
-*.png
-*.html
-*.gif
+*
+*/
+*.ipynb
+.ipynb_checkpoints/*
+__pycache__/*
+file_transfer/*
 !.gitignore
