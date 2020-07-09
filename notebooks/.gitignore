@@ -3,4 +3,6 @@ __pycache__/
 *.png
 *.html
 *.gif
+*.ipynb
+file_transfer/*
 !.gitignore
