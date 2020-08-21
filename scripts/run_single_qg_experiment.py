@@ -56,7 +56,7 @@ def generate_experiment_id():
 
 def generate_ml_fluid_params(  training_length, trained_model_params, testing_length, 
                                trained_model_filename, stream_function_prefix, 
-                               xct, yct, dt, ds, di, dm, pertamp ): 
+                               xct, yct, dt, ds, di, dm, pertamp, unique_id ): 
     # params to pass into config for ML_Fluid 
     params_dict = {
         'PREPROCESS' : { 
@@ -66,28 +66,28 @@ def generate_ml_fluid_params(  training_length, trained_model_params, testing_le
             # 'MATLAB_filename' : 'QGpsi_128_256_dt0.01_ds0.03_di0.01_dm0.00_pertamp0.3.mat'
             # 'MATLAB_filename' : 'QGpsi_128_256_dt0.01_ds0.03_di0.00_dm0.00_pertamp0.3',
             'training_length'         : training_length,
-            'training_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TRAIN',
-            'testing_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TEST'  
+            'training_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}_id{unique_id}.TRAIN',
+            'testing_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}_id{unique_id}.TEST'  
         },
         'TRAIN' : { 
-            'training_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TRAIN',
+            'training_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}_id{unique_id}.TRAIN',
             'trained_model_params'    : trained_model_params,
             'trained_model_filename'  : trained_model_filename,
         },
         'TEST' : { 
-            'testing_data_filename'   : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TEST',
+            'testing_data_filename'   : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}_id{unique_id}.TEST',
             'testing_length'          : testing_length,
             'trained_model_filename'  : trained_model_filename, 
             'output_filenames'        : { # Davis wuz here!!
-                'stream_function_estimated' : f'{stream_function_prefix}.est',
-                'stream_function_actual'    : f'{stream_function_prefix}.actual',
+                'stream_function_estimated' : f'{stream_function_prefix}_id{unique_id}.est',
+                'stream_function_actual'    : f'{stream_function_prefix}_id{unique_id}.actual',
             }
 
         }
     }
     return params_dict
 
-def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=10, xct=128, yct=64 ):
+def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=10, xct=128, yct=64, unique_id=1 ):
     """
     params to pass into config for QG_FTLE
     stream_function_prefix - part of the stream function file name 
@@ -98,11 +98,11 @@ def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=
 
     params_dict = dict()
     for actual_flag in ['actual', 'est']:   
-        params_dict[ f"{stream_function_prefix}.{actual_flag}" ] = { 
+        params_dict[ f"{stream_function_prefix}_id{unique_id}.{actual_flag}" ] = { 
             'GENERATE_VELOCITY_FIELDS' : {
-                'stream_function_filename' : f"{stream_function_prefix}.{actual_flag}", 
-                'velocity_filename' : f"{stream_function_prefix}.uv.{actual_flag}",
-                'velocity_func_filename' : f"{stream_function_prefix}.uvinterp.{actual_flag}"
+                'stream_function_filename' : f"{stream_function_prefix}_id{unique_id}.{actual_flag}", 
+                'velocity_filename' : f"{stream_function_prefix}_id{unique_id}.uv.{actual_flag}",
+                'velocity_func_filename' : f"{stream_function_prefix}_id{unique_id}.uvinterp.{actual_flag}"
             }, 
             'GENERATE_FTLE_MAPPING' : {
                 'iters' : iters, 
@@ -111,22 +111,22 @@ def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=
                 'xct': xct, 
                 'yct': yct,
                 # Davis wuz here!!
-                'velocity_func_filename': f"{stream_function_prefix}.uvinterp.{actual_flag}",
-                'mapping_path_dir': f"{stream_function_prefix}.{actual_flag}"
+                'velocity_func_filename': f"{stream_function_prefix}_id{unique_id}.uvinterp.{actual_flag}",
+                'mapping_path_dir': f"{stream_function_prefix}_id{unique_id}.{actual_flag}"
             },
             'GENERATE_FTLE_FIELDS': {
                 'iters' : iters,
                 'xct': xct, 
                 'yct': yct,
-                'mapping_path_dir': f"{stream_function_prefix}.{actual_flag}",
-                'ftle_path_dir' : f"{stream_function_prefix}.{actual_flag}"
+                'mapping_path_dir': f"{stream_function_prefix}_id{unique_id}.{actual_flag}",
+                'ftle_path_dir' : f"{stream_function_prefix}_id{unique_id}.{actual_flag}"
             }, 
             'GENERATE_FTLE_ANIMATIONS': {
                 'iters' : iters,
                 'xct': xct, 
                 'yct': yct,
-                'ftle_path_dir' : f"{stream_function_prefix}.{actual_flag}",
-                'ftle_animation_filename' : f"{stream_function_prefix}.{actual_flag}.gif",
+                'ftle_path_dir' : f"{stream_function_prefix}_id{unique_id}.{actual_flag}",
+                'ftle_animation_filename' : f"{stream_function_prefix}_id{unique_id}.{actual_flag}.gif",
             }
         }
     return params_dict
@@ -135,7 +135,7 @@ def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=
 
 def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e-1, 
                                 leaking_rate=0.2, input_scaling=0.3, ridgeReg=0.01,
-                                xct=64, yct=128, dt=0.01, ds=0.04, di=0.02, dm=0.0, pertamp=0.2): 
+                                xct=64, yct=128, dt=0.01, ds=0.04, di=0.02, dm=0.0, pertamp=0.2, unique_id=1): 
     ## Preparing parameters for entire experiment
     ## ml fluid params should link to qgftle params by  
     ## stream_function_estimated and stream_function_actual
@@ -158,7 +158,8 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
     mapped_dt = 5
     iters = 10
 
-    stream_function_prefix = f"QGds{ds:.2f}di{di:.2f}dm{dm:.2f}p{pertamp:.1f}rs{resSize}sr{spectral_radius:.1f}dens{density:.1f}lr{leaking_rate:.1f}insc{input_scaling:.1f}reg{ridgeReg:.1f}"
+    stream_function_prefix = \
+        f"QGds{ds:.2f}di{di:.2f}dm{dm:.2f}p{pertamp:.1f}rs{resSize}sr{spectral_radius:.1f}dens{density:.1f}lr{leaking_rate:.1f}insc{input_scaling:.1f}reg{ridgeReg:.1f}"
     
     ######################################
     print("""\n====================================================================================""")
@@ -191,12 +192,12 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
                                         testing_length=testing_length,
                                         trained_model_filename=trained_model_filename,
                                         stream_function_prefix=stream_function_prefix,
-                                        xct=xct, yct=yct, dt=dt, ds=ds, di=di, dm=dm, pertamp=pertamp
+                                        xct=xct, yct=yct, dt=dt, ds=ds, di=di, dm=dm, pertamp=pertamp, unique_id=unique_id
                                     )
     
     
     qgftle_params_dict = generate_qgftle_params( stream_function_prefix=stream_function_prefix,
-                                                 mapped_dt=mapped_dt, dt=dt, iters=iters, xct=xct,yct=yct )
+                                                 mapped_dt=mapped_dt, dt=dt, iters=iters, xct=xct,yct=yct, unique_id=unique_id )
 
     """
     1. Running ML_Fluids procedure - train a model on training data and generate 
@@ -231,7 +232,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
     # d. compare stream function files
     switch_to_qgftle_src_dir() 
     import compare_streamfunctions
-    data = compare_streamfunctions.compare_stream_functions(max_iters=2000, 
+    data = compare_streamfunctions.compare_stream_functions(max_iters=12000, 
                                                             sf_filenames=[streamfunction_filename for _,streamfunction_filename 
                                                                 in ml_fluid_params_dict['TEST']['output_filenames'].items()])
     
@@ -263,9 +264,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--spectral_radius', type=float)
     parser.add_argument('--resSize', type=int)
+    parser.add_argument('--id', type=int)
     args = parser.parse_args()
     spectral_radius = args.spectral_radius
     resSize = args.resSize    
+    unique_id = args.id 
 
     density = 0.1
     leaking_rate = 0.5
@@ -295,7 +298,8 @@ if __name__ == '__main__':
     data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, 
                              noise=1e-2, density=density, leaking_rate=leaking_rate, 
                              input_scaling=input_scaling, ridgeReg=ridgeReg,
-                             xct=xct, yct=yct, dt=dt, ds=ds, di=di, dm=dm, pertamp=pertamp)
+                             xct=xct, yct=yct, dt=dt, ds=ds, di=di, dm=dm, pertamp=pertamp, 
+                             unique_id=unique_id)
            
     supdata[ (resSize, spectral_radius) ] = data
     
