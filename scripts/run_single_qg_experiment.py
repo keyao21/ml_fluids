@@ -66,16 +66,16 @@ def generate_ml_fluid_params(  training_length, trained_model_params, testing_le
             # 'MATLAB_filename' : 'QGpsi_128_256_dt0.01_ds0.03_di0.01_dm0.00_pertamp0.3.mat'
             # 'MATLAB_filename' : 'QGpsi_128_256_dt0.01_ds0.03_di0.00_dm0.00_pertamp0.3',
             'training_length'         : training_length,
-            'training_data_filename'  : 'QGds02di02dm02p3.TRAIN',
-            'testing_data_filename'  : 'QGds02di02dm02p3.TEST'  
+            'training_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TRAIN',
+            'testing_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TEST'  
         },
         'TRAIN' : { 
-            'training_data_filename'  : 'QGds02di02dm02p3.TRAIN',
+            'training_data_filename'  : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TRAIN',
             'trained_model_params'    : trained_model_params,
             'trained_model_filename'  : trained_model_filename,
         },
         'TEST' : { 
-            'testing_data_filename'   : 'QGds02di02dm02p3.TEST',
+            'testing_data_filename'   : f'QGpsi_{xct}_{yct}_dt{dt:.2f}_ds{ds:.2f}_di{di:.2f}_dm{dm:.2f}_pertamp{pertamp:.1f}.TEST',
             'testing_length'          : testing_length,
             'trained_model_filename'  : trained_model_filename, 
             'output_filenames'        : { # Davis wuz here!!
