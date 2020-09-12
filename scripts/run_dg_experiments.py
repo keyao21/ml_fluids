@@ -259,8 +259,8 @@ def run_experiment_without_ftle(resSize, spectral_radius):
         "ridgeReg"          : 0.01, 
         "mute"              : False 
     }
-    training_length = 3000
-    testing_length = 3000
+    training_length = 500
+    testing_length = 500
     dt = 0.1
     elapsedTime = 700
     xct = 160

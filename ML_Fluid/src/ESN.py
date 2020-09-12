@@ -167,6 +167,7 @@ class EchoStateNetwork(object):
     def test(self, testing_data):
         """Test on actual data using trained model"""
         logging.info("Testing...")
+        # import pdb;pdb.set_trace()
 
         # Initialize test data vectors
         self.testLen = testing_data.shape[0]

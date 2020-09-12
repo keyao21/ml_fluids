@@ -5,8 +5,8 @@ import random
 
 def main(): 
     
-    resSizes = [1000, 5000]
-    spectral_radiuses = [2.0, 3.0]
+    resSizes = [1000, 5000, 10000, 50000]
+    spectral_radiuses = [1.0, 2.0, 3.0]
     num_prcs = len(resSizes)*len(spectral_radiuses)
     
     max_id = 1
@@ -21,7 +21,7 @@ def main():
                       " --resSize {res}"
                       " --id {id}".format(sr=sr,res=res,id=unique_ids[i]),) 
     for p in processes: print(p) 
-    pool = Pool(processes=)
+    pool = Pool(processes=num_prcs)
     pool.map(run_process, processes)
 
 def run_process(prc): 
