@@ -186,7 +186,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
 
 
 
-    trained_model_filename = f'{stream_function_prefix}.ESN'
+    trained_model_filename = f'{stream_function_prefix}_id{unique_id}.ESN'
     ml_fluid_params_dict = generate_ml_fluid_params(    training_length=training_length, 
                                         trained_model_params=trained_model_params,
                                         testing_length=testing_length,
@@ -285,9 +285,6 @@ if __name__ == '__main__':
     xct=64
     yct=128
     dt=0.01
-    
-    
-
 
     # from itertools import product 
     # resSizes = [1000, 10000]
