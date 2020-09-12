@@ -3,7 +3,7 @@ import os
 import sys 
 import shutil 
 import argparse 
-import panedas as pd 
+import pandas as pd 
 from pprint import pprint 
 
 curr_fullpath = os.getcwd()
