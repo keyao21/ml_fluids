@@ -19,7 +19,7 @@ def main():
         processes += (f"run_single_qg_experiment.py"
                       " --spectral_radius {sr}"
                       " --resSize {res}"
-                      " --id {id}".format(sr=sr,res=res,id=unique_ids[i]),) 
+                      " --id {id}".format(sr=sr,res=res,id=i),) 
     for p in processes: print(p) 
     pool = Pool(processes=num_prcs)
     pool.map(run_process, processes)
