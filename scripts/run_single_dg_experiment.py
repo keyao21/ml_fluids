@@ -132,7 +132,7 @@ def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=
 
 
 
-def run_experiment_without_ftle(resSize, spectral_radius, training_length, unique_id): 
+def run_experiment_without_ftle(resSize, spectral_radius, training_length, ridge_reg, unique_id): 
     ## Preparing parameters for entire experiment
     ## ml fluid params should link to qgftle params by  
     ## stream_function_estimated and stream_function_actual
@@ -145,7 +145,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, uniqu
         "spectral_radius"   : spectral_radius, 
         "leaking_rate"      : 0.2, 
         "input_scaling"     : 0.3, 
-        "ridgeReg"          : 1e-1, 
+        "ridgeReg"          : ridge_reg, 
         "mute"              : False 
     }
     testing_length = 2000
@@ -238,18 +238,20 @@ if __name__ == '__main__':
     parser.add_argument('--spectral_radius', type=float)
     parser.add_argument('--resSize', type=int)
     parser.add_argument('--training_length', type=int)
+    parser.add_argument('--ridge_reg', type=float)
     parser.add_argument('--id', type=int)
     args = parser.parse_args()
     spectral_radius = args.spectral_radius
     resSize = args.resSize
     training_length = args.training_length    
+    ridge_reg = args.ridge_reg    
     unique_id = args.id 
 
     supdata = {}
     data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, 
-                    training_length=training_length, unique_id=unique_id)
-    supdata[ (resSize, spectral_radius, training_length) ] = data
+                    training_length=training_length, ridge_reg=ridge_reg, unique_id=unique_id)
+    supdata[ (resSize, spectral_radius, training_length, ridge_reg) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
-    data_df.to_pickle(os.path.join('./experiments/', f"dg_sr{spectral_radius:.1f}res{resSize}train{training_length}"))
+    data_df.to_pickle(os.path.join('./experiments/', f"dg_sr{spectral_radius:.1f}res{resSize}train{training_length}ridge{ridge_reg}"))
     # import pdb;pdb.set_trace()
     print('done.')
