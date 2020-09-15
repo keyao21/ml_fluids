@@ -132,7 +132,7 @@ def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=
 
 
 
-def run_experiment_without_ftle(resSize, spectral_radius, unique_id): 
+def run_experiment_without_ftle(resSize, spectral_radius, training_length, unique_id): 
     ## Preparing parameters for entire experiment
     ## ml fluid params should link to qgftle params by  
     ## stream_function_estimated and stream_function_actual
@@ -145,13 +145,12 @@ def run_experiment_without_ftle(resSize, spectral_radius, unique_id):
         "spectral_radius"   : spectral_radius, 
         "leaking_rate"      : 0.2, 
         "input_scaling"     : 0.3, 
-        "ridgeReg"          : 0.01, 
+        "ridgeReg"          : 1e-1, 
         "mute"              : False 
     }
-    training_length = 500
-    testing_length = 500
+    testing_length = 2000
     dt = 0.1
-    elapsedTime = 700
+    elapsedTime = 1000
     xct = 160
     yct = 80
     amp = 0.1
@@ -220,7 +219,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, unique_id):
     # d. compare stream function files
     switch_to_qgftle_src_dir() 
     import compare_streamfunctions
-    data = compare_streamfunctions.compare_stream_functions(max_iters=12000, 
+    data = compare_streamfunctions.compare_stream_functions(max_iters=2000, 
                                                             sf_filenames=[streamfunction_filename for _,streamfunction_filename 
                                                                 in ml_fluid_params_dict['TEST']['output_filenames'].items()])
 
@@ -238,16 +237,19 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--spectral_radius', type=float)
     parser.add_argument('--resSize', type=int)
+    parser.add_argument('--training_length', type=int)
     parser.add_argument('--id', type=int)
     args = parser.parse_args()
     spectral_radius = args.spectral_radius
-    resSize = args.resSize    
+    resSize = args.resSize
+    training_length = args.training_length    
     unique_id = args.id 
 
     supdata = {}
-    data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, unique_id=unique_id)
-    supdata[ (resSize, spectral_radius) ] = data
+    data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, 
+                    training_length=training_length, unique_id=unique_id)
+    supdata[ (resSize, spectral_radius, training_length) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
-    data_df.to_pickle(os.path.join('./experiments/', f"sr{spectral_radius:.1f}res{resSize}"))
+    data_df.to_pickle(os.path.join('./experiments/', f"dg_sr{spectral_radius:.1f}res{resSize}train{training_length}"))
     # import pdb;pdb.set_trace()
     print('done.')
