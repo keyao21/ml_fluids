@@ -135,12 +135,13 @@ def generate_qgftle_params( stream_function_prefix, mapped_dt=20, dt=0.1, iters=
 
 def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e-1, 
                                 leaking_rate=0.2, input_scaling=0.3, ridgeReg=0.01,
-                                xct=64, yct=128, dt=0.01, ds=0.04, di=0.02, dm=0.0, pertamp=0.2, unique_id=1): 
+                                xct=64, yct=128, dt=0.01, ds=0.04, di=0.02, dm=0.0, pertamp=0.2, 
+                                training_length=10000, init_length=0, unique_id=1): 
     ## Preparing parameters for entire experiment
     ## ml fluid params should link to qgftle params by  
     ## stream_function_estimated and stream_function_actual
     trained_model_params = { 
-        "initLen"           : 0, 
+        "initLen"           : entire, 
         "resSize"           : resSize, 
         "partial_know"      : False, 
         "noise"             : noise, 
@@ -151,7 +152,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
         "ridgeReg"          : ridgeReg, 
         "mute"              : False 
     }
-    training_length = 14000
+    training_length = training_length
     testing_length = 14000
         
     # these actually don't matter because they are only used for FTLE calculation
@@ -264,18 +265,22 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--spectral_radius', type=float)
     parser.add_argument('--resSize', type=int)
+    parser.add_argument('--training_length', type=int)
+    parser.add_argument('--init_length', type=int)
+    parser.add_argument('--ridge_reg', type=float)
     parser.add_argument('--id', type=int)
     args = parser.parse_args()
     spectral_radius = args.spectral_radius
-    resSize = args.resSize    
+    resSize = args.resSize
+    training_length = args.training_length    
+    init_length = args.init_length
+    ridge_reg = args.ridge_reg    
     unique_id = args.id 
 
     density = 0.1
     leaking_rate = 0.5
-    # spectral_radius = 3.0
     input_scaling = 0.1
-    ridgeReg = 0.1
-
+    
     
     ds = 0.03
     di = 0.02
@@ -286,23 +291,18 @@ if __name__ == '__main__':
     yct=128
     dt=0.01
 
-    # from itertools import product 
-    # resSizes = [1000, 10000]
-    # spectral_radiuses = [2.5, 3.0]
     
     supdata = {}
-    # for (resSize, spectral_radius) in product(resSizes, spectral_radiuses): 
     data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, 
                              noise=1e-2, density=density, leaking_rate=leaking_rate, 
                              input_scaling=input_scaling, ridgeReg=ridgeReg,
                              xct=xct, yct=yct, dt=dt, ds=ds, di=di, dm=dm, pertamp=pertamp, 
-                             unique_id=unique_id)
+                             training_length=training_length, init_length=init_length, unique_id=unique_id)
            
-    supdata[ (resSize, spectral_radius) ] = data
-    
+    supdata[ (resSize, spectral_radius, training_length, init_length, ridge_reg) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
-    data_df.to_pickle(os.path.join('./experiments/', f"sr{spectral_radius:.1f}res{resSize}"))
-    # import pdb;pdb.set_trace()
+    data_df.to_pickle(os.path.join('./experiments/', 
+        f"qg_sr{spectral_radius:.1f}res{resSize}trained{training_length-init_length}ridge{ridge_reg}"))
             
     print('done.')
 

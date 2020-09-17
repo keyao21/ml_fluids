@@ -5,30 +5,37 @@ import random
 
 def main(): 
     
-    resSizes = [1000, 5000, 10000, 50000]
+    resSizes = [5000, 10000]
     spectral_radiuses = [1.0, 2.0, 3.0]
-    num_prcs = len(resSizes)*len(spectral_radiuses)
-    
-    max_id = 1
-    while max_id < num_prcs: 
-        max_id *= 10
+    training_lengths = [10000]
+    init_lengths = [0]
+    ridge_regs = [1e-1,1]
 
-    unique_ids = random.sample(range(1, max_id), num_prcs)
     processes = ()
-    for i,(res, sr) in enumerate(product(resSizes, spectral_radiuses)):
-        processes += (f"run_single_qg_experiment.py"
+    for i,(res, sr, training_length, init_length, ridge_reg) in enumerate(
+      product(resSizes, spectral_radiuses, training_lengths, init_lengths, ridge_regs)
+      ):
+        processes += (f"run_single_dg_experiment.py"
                       " --spectral_radius {sr}"
                       " --resSize {res}"
-                      " --id {id}".format(sr=sr,res=res,id=i),) 
-    for p in processes: print(p) 
-    pool = Pool(processes=num_prcs)
+                      " --training_length {training_length}"
+                      " --init_length {init_length}"
+                      " --ridge_reg {ridge_reg}"
+                      " --id {id}".format(
+                            sr=sr,res=res,
+                            training_length=max(training_lengths),
+                            init_length=init_length,ridge_reg=ridge_reg,id=i),)
+        # note: remember that training_length determines the amount of data 
+        # chopped off to be used for training, but the init_length determines 
+        # the amount of data **skipped** in the chopped off data 
+    for p in processes: print(p)
+    pool = Pool(processes=len(resSizes)*len(spectral_radiuses))
     pool.map(run_process, processes)
 
-def run_process(prc): 
+def run_process(prc):
     os.system('python {}'.format(prc))
 
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     main()
-
