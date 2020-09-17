@@ -253,8 +253,9 @@ if __name__ == '__main__':
     data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, 
                     training_length=training_length, init_length=init_length, 
                     ridge_reg=ridge_reg, unique_id=unique_id)
-    supdata[ (resSize, spectral_radius, training_length, ridge_reg) ] = data
+    supdata[ (resSize, spectral_radius, training_length, init_length, ridge_reg) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
-    data_df.to_pickle(os.path.join('./experiments/', f"dg_sr{spectral_radius:.1f}res{resSize}train{training_length}ridge{ridge_reg}"))
+    data_df.to_pickle(os.path.join('./experiments/', 
+              f"dg_sr{spectral_radius:.1f}res{resSize}trained{training_length-init_length}ridge{ridge_reg}"))
     # import pdb;pdb.set_trace()
     print('done.')

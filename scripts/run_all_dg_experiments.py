@@ -4,15 +4,23 @@ from itertools import product
 
 def main():
 
-    resSizes = [100, 1000, 5000]
-    spectral_radiuses = [0.5, 1.0, 3.0, 5.0]
-    training_lengths = [500, 1000, 1500, 2000]
-    init_lengths = [ max(training_lengths)-train_len for train_len in training_lengths ]
-    ridge_regs = [1e-3,1e-1,0,1,1e1]
+    resSizes = [5000,3000,4000]
+    spectral_radiuses = [2.0,1.7,2.3]
+    training_lengths = [2000]
+    init_lengths = [0,500,1000]
+    ridge_regs = [1]
+
+    # TESTINGGGGG####### 
+    # spectral_radiuses = [2.0]
+    # training_lengths = [1000]
+    # init_lengths = [0, 500]
+    # ridge_regs = [1e-1]
+    ##################################
+
 
     processes = ()
     for i,(res, sr, training_length, init_length, ridge_reg) in enumerate(
-      product(resSizes, spectral_radiuses, training_lengths, init_lengths ridge_regs)
+      product(resSizes, spectral_radiuses, training_lengths, init_lengths, ridge_regs)
       ):
         processes += (f"run_single_dg_experiment.py"
                       " --spectral_radius {sr}"
@@ -23,7 +31,7 @@ def main():
                       " --id {id}".format(
                             sr=sr,res=res,
                             training_length=max(training_lengths),
-                            ridge_reg=ridge_reg,id=i),)
+                            init_length=init_length,ridge_reg=ridge_reg,id=i),)
         # note: remember that training_length determines the amount of data 
         # chopped off to be used for training, but the init_length determines 
         # the amount of data **skipped** in the chopped off data 
