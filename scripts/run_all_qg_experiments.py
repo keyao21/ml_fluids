@@ -5,26 +5,34 @@ import random
 
 def main(): 
     
-    resSizes = [5000, 10000]
-    spectral_radiuses = [1.0, 2.0, 3.0]
-    training_lengths = [10000]
-    init_lengths = [0]
-    ridge_regs = [1e-1,1]
+    resSizes = [5000]
+    spectral_radiuses = [1.4]
+    training_lengths = [5000]
+    init_lengths = [0,2000,4000]
+    ridge_regs = [1]
+    densities = [0.5]
+    leaking_rates = [0.0]
+    input_scalings = [0.1]    
 
     processes = ()
-    for i,(res, sr, training_length, init_length, ridge_reg) in enumerate(
-      product(resSizes, spectral_radiuses, training_lengths, init_lengths, ridge_regs)
+    for i,(res, sr, training_length, init_length, ridge_reg, density, leaking_rate, input_scaling) in enumerate(
+      product(resSizes, spectral_radiuses, training_lengths, init_lengths, ridge_regs, densities, leaking_rates, input_scalings)
       ):
-        processes += (f"run_single_dg_experiment.py"
+        processes += (f"run_single_qg_experiment.py"
                       " --spectral_radius {sr}"
                       " --resSize {res}"
                       " --training_length {training_length}"
                       " --init_length {init_length}"
                       " --ridge_reg {ridge_reg}"
+                      " --density {density}"
+                      " --leaking_rate {leaking_rate}"
+                      " --input_scaling {input_scaling}"
                       " --id {id}".format(
                             sr=sr,res=res,
                             training_length=max(training_lengths),
-                            init_length=init_length,ridge_reg=ridge_reg,id=i),)
+                            init_length=init_length,ridge_reg=ridge_reg,
+                            density=density,leaking_rate=leaking_rate,
+                            input_scaling=input_scaling,id=i),)
         # note: remember that training_length determines the amount of data 
         # chopped off to be used for training, but the init_length determines 
         # the amount of data **skipped** in the chopped off data 

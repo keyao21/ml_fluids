@@ -141,7 +141,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
     ## ml fluid params should link to qgftle params by  
     ## stream_function_estimated and stream_function_actual
     trained_model_params = { 
-        "initLen"           : entire, 
+        "initLen"           : init_length, 
         "resSize"           : resSize, 
         "partial_know"      : False, 
         "noise"             : noise, 
@@ -236,7 +236,12 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
     data = compare_streamfunctions.compare_stream_functions(max_iters=12000, 
                                                             sf_filenames=[streamfunction_filename for _,streamfunction_filename 
                                                                 in ml_fluid_params_dict['TEST']['output_filenames'].items()])
-    
+   
+
+    for params_key, params_dict in qgftle_params_dict.items(): 
+        # generate velocity fields 
+        import generate_velocity_fields 
+        generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
     
     # import pdb;pdb.set_trace()
@@ -268,24 +273,30 @@ if __name__ == '__main__':
     parser.add_argument('--training_length', type=int)
     parser.add_argument('--init_length', type=int)
     parser.add_argument('--ridge_reg', type=float)
+    parser.add_argument('--density',type=float)
+    parser.add_argument('--input_scaling',type=float)
+    parser.add_argument('--leaking_rate',type=float)
     parser.add_argument('--id', type=int)
     args = parser.parse_args()
     spectral_radius = args.spectral_radius
     resSize = args.resSize
     training_length = args.training_length    
     init_length = args.init_length
-    ridge_reg = args.ridge_reg    
+    ridge_reg = args.ridge_reg
+    density = args.density
+    leaking_rate = args.leaking_rate
+    input_scaling = args.input_scaling    
     unique_id = args.id 
 
-    density = 0.1
-    leaking_rate = 0.5
-    input_scaling = 0.1
+    # density = 0.1
+    # leaking_rate = 0.5
+    # input_scaling = 0.1
     
     
-    ds = 0.03
-    di = 0.02
-    dm = 0.00
-    pertamp = 0.3
+    ds = 0.01
+    di = 0.05
+    dm = 0.03
+    pertamp = 0.5
     
     xct=64
     yct=128
@@ -295,14 +306,15 @@ if __name__ == '__main__':
     supdata = {}
     data = run_experiment_without_ftle(resSize=resSize, spectral_radius=spectral_radius, 
                              noise=1e-2, density=density, leaking_rate=leaking_rate, 
-                             input_scaling=input_scaling, ridgeReg=ridgeReg,
+                             input_scaling=input_scaling, ridgeReg=ridge_reg,
                              xct=xct, yct=yct, dt=dt, ds=ds, di=di, dm=dm, pertamp=pertamp, 
                              training_length=training_length, init_length=init_length, unique_id=unique_id)
            
-    supdata[ (resSize, spectral_radius, training_length, init_length, ridge_reg) ] = data
+    supdata[ (resSize, spectral_radius, training_length, init_length, ridge_reg, density, leaking_rate, input_scaling, unique_id) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
     data_df.to_pickle(os.path.join('./experiments/', 
-        f"qg_sr{spectral_radius:.1f}res{resSize}trained{training_length-init_length}ridge{ridge_reg}"))
+        f"qg_id{unique_id}"))
+
             
     print('done.')
 
