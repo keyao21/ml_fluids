@@ -136,7 +136,7 @@ class EchoStateNetwork(object):
                             + (1.0-self.leaking_rate)*np.tanh( np.dot(self.Win, np.vstack((1, self.u[t].reshape(self.inSize,1))) ) \
                                                              + np.dot( self.A, self.r_t) ) \
                             + self.noise*np.random.rand(self.resSize,1) #same shape as r_t
-            if t >= self.trainLen: 
+            if t >= self.initLen: 
                 self.r[:,t_+1] = np.vstack((1,self.u[t].reshape(self.inSize,1), self.r_t)).reshape(self.inSize+self.resSize+1)
                 t_ += 1
 
