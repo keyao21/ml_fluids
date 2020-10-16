@@ -312,6 +312,7 @@ if __name__ == '__main__':
            
     supdata[ (resSize, spectral_radius, training_length, init_length, ridge_reg, density, leaking_rate, input_scaling, unique_id) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
+    # import pdb;pdb.set_trace()
     data_df.to_pickle(os.path.join('./experiments/', 
         f"qg_id{unique_id}"))
 

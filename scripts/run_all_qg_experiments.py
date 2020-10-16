@@ -8,7 +8,7 @@ def main():
     resSizes = [5000]
     spectral_radiuses = [1.4]
     training_lengths = [5000]
-    init_lengths = [0,2000,4000]
+    init_lengths = [ 4900, 4930, 4950 ]# [3000,4000, 4400,4800]
     ridge_regs = [1]
     densities = [0.5]
     leaking_rates = [0.0]

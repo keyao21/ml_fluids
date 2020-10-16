@@ -52,9 +52,10 @@ def generate_experiment_id():
 def load_trajectories(experiment_prefixes, num_samples, elapsed_time, dt, dim, noise): 
     # e.g. 
     # experiment_prefix = "QGds0.01di0.05dm0.03p0.5rs1000sr3.0dens0.1lr0.5insc0.1reg0.1"
+    import config, util 
     states = dict()
     for experiment_prefix in experiment_prefixes: 
-        velocity_func_filenames = [ f"{experiment_prefix}.uvinterp.{actual_flag}" for actual_flag in ['actual', 'actual', 'est']  ]
+        velocity_func_filenames = [f"{experiment_prefix}.uvinterp.actual"]
         vfuncs_list = []
         for velocity_func_filename in velocity_func_filenames:
             velocity_func_fullpath = os.path.join( config.INTERP_VELOCITY_PATH_DIR, velocity_func_filename)
@@ -68,11 +69,25 @@ def load_trajectories(experiment_prefixes, num_samples, elapsed_time, dt, dim, n
 if __name__ == '__main__':
     
     switch_to_qgftle_src_dir() 
-    experiment_prefixes = ['QGds0.01di0.05dm0.03p0.5rs1000sr3.0dens0.1lr0.5insc0.1reg0.1']
+    import compare_trajectories
+    experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
     num_samples = 10
     elapsed_time = 100 
     dt = 0.01
     dim = 1
     noise = 0.1
-    load_trajectories(experiment_prefixes, num_samples, elapsed_time, dt, dim, noise)
+    trajectories = load_trajectories([experiment_prefix], num_samples, elapsed_time, dt, dim, noise)
+    import pdb;pdb.set_trace(); 
+    traj = trajectories[experiment_prefix]
+    traj = traj.reshape( traj.shape[1], traj.shape[2], traj.shape[3] )
+    
+    # traj = traj.reshape(traj.shape[1], traj.shape[0], traj.shape[2])
+    # traj = traj.reshape( int(elapsed_time/dt), 2, num_samples)
+    
 
+
+
+
+
+
+    import pdb; pdb.set_trace()
