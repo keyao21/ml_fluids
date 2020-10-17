@@ -4,7 +4,10 @@ import sys
 import shutil 
 import argparse 
 import pandas as pd 
+import numpy as np 
 from pprint import pprint 
+import matplotlib.pyplot as plt 
+
 
 curr_fullpath = os.getcwd()
 ML_Fluid_fullpath = os.path.abspath("../ML_Fluid/src/")
@@ -110,18 +113,54 @@ if __name__ == '__main__':
     switch_to_qgftle_src_dir() 
     import compare_trajectories
     experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
-    num_samples = 10
+    num_samples = 100
     elapsed_time = 100 
     dt = 0.01
     dim = 1
     noise = 0.1
     trajectories = load_trajectories([experiment_prefix], num_samples, elapsed_time, dt, dim, noise)
     traj = trajectories[experiment_prefix]
-    traj = traj.reshape( traj.shape[2], traj.shape[1], traj.shape[3] )
+    traj = np.transpose(traj, (2,3,1,0))
+    traj = traj.squeeze(axis=3)
     
-    train_traj = traj[:, :, :5]
-    test_traj = traj[:, :, 5:]
+    train_traj = traj[:, :, :num_samples-1]
+    test_traj = traj[:, :, -1]
+    
+    import pdb;pdb.set_trace() 
 
     switch_to_mlfluids_src_dir()
-    import train 
-    train.train_ESN()
+    import util, config
+    util.save_data( train_traj, os.path.join(config.PREPROCESS_INPUT_PATH_DIR, experiment_prefix + '_trajs.TRAIN') )
+    util.save_data( test_traj, os.path.join(config.PREPROCESS_INPUT_PATH_DIR, experiment_prefix + '_trajs.TEST') )
+
+    import MESN
+    from MESN import MultiEchoStateNetwork
+    trained_model_params = { 
+        "initLen"           : 0, 
+        "resSize"           : 2000, 
+        "partial_know"      : False, 
+        "noise"             : 1e-2, 
+        "density"           : 1e-1, 
+        "spectral_radius"   : 1.0, 
+        "leaking_rate"      : 0.2, 
+        "input_scaling"     : 0.8, 
+        "ridgeReg"          : 1.0, 
+        "mute"              : False 
+    }
+    mesn = MultiEchoStateNetwork(loaddata = train_traj, **trained_model_params)
+    mesn.train()
+    mesn.test(testing_data = test_traj)
+    traj_est = mesn.v_
+    traj_actual = mesn.v_tgt_.transpose()
+    
+    util.save_data(traj_est, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '.est'))
+    util.save_data(traj_actual, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '.actual'))
+    
+    import pdb;pdb.set_trace()
+    plt.figure()
+    plt.scatter(traj_est[:100,1], traj_est[:100,1], color='b')
+    plt.scatter(traj_actual[:100,1], traj_actual[:100,1], color='r') 
+    plt.savefig(config.RESULTS_PATH_DIR, experiment_prefix + '_traj.compare')
+
+
+

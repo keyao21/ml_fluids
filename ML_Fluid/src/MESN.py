@@ -96,10 +96,14 @@ class MultiEchoStateNetwork(EchoStateNetwork):
     def initialize(self): 
         """This is a reimplementation of ESN object initiation to account for multiple input samples"""
         logging.info("Initializing model...")
-        pool = Pool(processes=self.data.shape[-1])
-        idxs = [i for i in range(self.data.shape[-1])]
-        pool.map(self.convert_to_reservoir_space, idxs)
-
+        print("Initializing...") 
+        # import pdb;pdb.set_trace() 
+        # pool = Pool(processes=self.data.shape[-1])
+        # idxs = [i for i in range(self.data.shape[-1])]
+        # pool.map(self.convert_to_reservoir_space, idxs)
+        for i in range(self.data.shape[-1]): 
+            self.convert_to_reservoir_space(i)
+        
         r_chunks = np.zeros((1+self.inSize+self.resSize, self.trainLen-self.initLen+1, self.data.shape[-1])) 
         for data_chunk_idx in range(self.data.shape[-1]):
             with open('MESN_data/id{0}.pkl'.format(data_chunk_idx), 'rb') as f:
