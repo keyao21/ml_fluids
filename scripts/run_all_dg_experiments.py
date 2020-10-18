@@ -10,12 +10,13 @@ def main():
     init_lengths = [0,500,1000]
     ridge_regs = [1]
 
-    # TESTINGGGGG####### 
-    # spectral_radiuses = [2.0]
-    # training_lengths = [1000]
-    # init_lengths = [0, 500]
-    # ridge_regs = [1e-1]
-    ##################################
+    # TESTINGGGGG######
+    resSizes = [1000]# 
+    spectral_radiuses = [2.0]
+    training_lengths = [1000]
+    init_lengths = [0]
+    ridge_regs = [1e-1]
+    ################################
 
 
     processes = ()
