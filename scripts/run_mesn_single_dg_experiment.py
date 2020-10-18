@@ -109,11 +109,29 @@ def load_trajectories(experiment_prefixes, num_samples, elapsed_time, dt, dim, n
 
 
 if __name__ == '__main__':
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--spectral_radius', const=3.5, type=float)
+    parser.add_argument('--resSize', const=2000, type=int)
+    parser.add_argument('--training_length', const=7000, type=int)
+    parser.add_argument('--init_length', const=200, type=int)
+    parser.add_argument('--ridge_reg', const=1.0, type=float)
+    parser.add_argument('--density', const=0.5, type=float)
+    parser.add_argument('--input_scaling', const=0.5, type=float)
+    parser.add_argument('--leaking_rate', const=0.0, type=float)
+    parser.add_argument('--id', type=int)
+    args = parser.parse_args()
+    # spectral_radius = args.spectral_radius
+    # resSize = args.resSize
+    # training_length = args.training_length    
+    # init_length = args.init_length
+    # ridge_reg = args.ridge_reg    
+    # unique_id = args.id 
+
+
     switch_to_qgftle_src_dir() 
     import compare_trajectories
     # experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
-    experiment_prefix = 'dgsf_0.01_200_100_0.1_0.2_1000_2.0_id0'
+    experiment_prefix = 'dgsf_0.01_200_100_0.1_0.2_1000_2.0'
     num_samples = 1
     elapsed_time = 99
     dt = 0.01
@@ -124,28 +142,28 @@ if __name__ == '__main__':
     traj = np.transpose(traj, (2,3,1,0))
     traj = traj.squeeze(axis=3)
     
-    train_traj = traj[:7000, :, :]
-    test_traj = traj[7000:, :, -1]
+    train_traj = traj[:args.training_length , :, :]
+    test_traj = traj[args.training_length :, :, -1]
     
     # import pdb;pdb.set_trace() 
 
     switch_to_mlfluids_src_dir()
     import util, config
-    util.save_data( train_traj, os.path.join(config.PREPROCESS_INPUT_PATH_DIR, experiment_prefix + '_trajs.TRAIN') )
-    util.save_data( test_traj, os.path.join(config.PREPROCESS_INPUT_PATH_DIR, experiment_prefix + '_trajs.TEST') )
+    # util.save_data( train_traj, os.path.join(config.PREPROCESS_INPUT_PATH_DIR, experiment_prefix + '_trajs_{0}.TRAIN'.format(args.id ) ))
+    # util.save_data( test_traj, os.path.join(config.PREPROCESS_INPUT_PATH_DIR, experiment_prefix + '_trajs_{0}.TEST'.format(args.id ) ))
 
     import MESN
     from MESN import MultiEchoStateNetwork
     trained_model_params = { 
-        "initLen"           : 200, 
-        "resSize"           : 2000, 
+        "initLen"           : args.init_length, 
+        "resSize"           : args.resSize, 
         "partial_know"      : False, 
         "noise"             : 1e-2, 
-        "density"           : 5e-1, 
-        "spectral_radius"   : 3.5, 
-        "leaking_rate"      : 0.2, 
-        "input_scaling"     : 0.8, 
-        "ridgeReg"          : 1.0, 
+        "density"           : args.density, 
+        "spectral_radius"   : args.spectral_radius, 
+        "leaking_rate"      : args.leaking_rate, 
+        "input_scaling"     : args.input_scaling, 
+        "ridgeReg"          : args.ridge_reg, 
         "mute"              : False 
     }
     mesn = MultiEchoStateNetwork(loaddata = train_traj, **trained_model_params)
@@ -154,15 +172,14 @@ if __name__ == '__main__':
     traj_est = mesn.v_.T
     traj_actual = mesn.v_tgt_
     
-    util.save_data(traj_est, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '.est'))
-    util.save_data(traj_actual, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '.actual'))
+    # util.save_data(traj_est, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_{0}.est'.format(args.id )))
+    # util.save_data(traj_actual, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_{0}.actual'.format(args.id )))
     
     # import pdb;pdb.set_trace()
     plt.figure()
     plt.scatter(traj_est[:100,0], traj_est[:100,1], color='b')
     plt.scatter(traj_actual[:100,0], traj_actual[:100,1], color='r') 
-    plt.savefig(os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj.compare.jpg'))
-
-    mesn.plot(length=5000, name=os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj_ts.compare'))
+    plt.savefig(os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj_{0}.compare.jpg'.format(args.id )))
+    mesn.plot(length=5000, name=os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj_ts_{0}.compare'.format(args.id )))
     
 
