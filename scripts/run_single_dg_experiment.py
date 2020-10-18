@@ -148,11 +148,11 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, init_
         "ridgeReg"          : ridge_reg, 
         "mute"              : False 
     }
-    testing_length = 2000
-    dt = 0.1
-    elapsedTime = 1000
-    xct = 160
-    yct = 80
+    testing_length = 10000
+    dt = 0.01
+    elapsedTime = 2000
+    xct = 200
+    yct = 100
     amp = 0.1
     epsilon = 0.2
     stream_function_prefix = f"dgsf_{dt}_{xct}_{yct}_{amp}_{epsilon}_{resSize}_{spectral_radius:.1f}"
@@ -228,7 +228,12 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, init_
         import generate_velocity_fields 
         generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
+    for params_key, params_dict in qgftle_params_dict.items(): 
+        # generate velocity fields 
+        import generate_velocity_fields 
+        generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
+    
 
 
     switch_to_home_dir()

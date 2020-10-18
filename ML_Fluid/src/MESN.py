@@ -70,6 +70,7 @@ class MultiEchoStateNetwork(EchoStateNetwork):
         self.A *= self.spectral_radius/rhoW
 
         self.P = np.random.rand(self.outSize, self.resSize)-0.5
+        
         self.initialize()
 
     def convert_to_reservoir_space(self,data_chunk_idx): 
@@ -123,7 +124,7 @@ class MultiEchoStateNetwork(EchoStateNetwork):
         
         """
         logging.info("Training...")
-        
+        import pdb;pdb.set_trace()
         self.P = np.dot(np.dot(self.v_tgt.T,self.r.T), linalg.inv(np.dot(self.r,self.r.T) + \
             self.ridgeReg*np.eye(1+self.inSize+self.resSize) ) )
 

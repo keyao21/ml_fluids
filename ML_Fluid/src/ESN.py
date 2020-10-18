@@ -125,6 +125,7 @@ class EchoStateNetwork(object):
         # self.u += self.input_noise
 
         # Normalize reservoir matrix A by spectral radius
+        # import pdb;pdb.set_trace() 
         rhoW = max(abs(linalg.eig(self.A)[0]))
         self.A *= self.spectral_radius/rhoW
 

@@ -113,19 +113,19 @@ if __name__ == '__main__':
     switch_to_qgftle_src_dir() 
     import compare_trajectories
     # experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
-    experiment_prefix = 'dgsf_0.01_200_100_0.1_0.2_13000_2.0'
+    experiment_prefix = 'dgsf_0.01_200_100_0.1_0.2_1000_2.0_id0'
     num_samples = 1
-    elapsed_time = 900
+    elapsed_time = 99
     dt = 0.01
-    dim = 1
+    dim = 0
     noise = 0.1
     trajectories = load_trajectories([experiment_prefix], num_samples, elapsed_time, dt, dim, noise)
     traj = trajectories[experiment_prefix]
     traj = np.transpose(traj, (2,3,1,0))
     traj = traj.squeeze(axis=3)
     
-    train_traj = traj[:5000, :, :]
-    test_traj = traj[5000:, :, -1]
+    train_traj = traj[:7000, :, :]
+    test_traj = traj[7000:, :, -1]
     
     # import pdb;pdb.set_trace() 
 
