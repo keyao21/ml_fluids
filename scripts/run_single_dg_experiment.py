@@ -223,6 +223,10 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, init_
                                                             sf_filenames=[streamfunction_filename for _,streamfunction_filename 
                                                                 in ml_fluid_params_dict['TEST']['output_filenames'].items()])
 
+    for params_key, params_dict in qgftle_params_dict.items(): 
+        # generate velocity fields 
+        import generate_velocity_fields 
+        generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
 
 
