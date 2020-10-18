@@ -112,9 +112,10 @@ if __name__ == '__main__':
     
     switch_to_qgftle_src_dir() 
     import compare_trajectories
-    experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
-    num_samples = 100
-    elapsed_time = 100 
+    # experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
+    experiment_prefix = 'dgsf_0.01_200_100_0.1_0.2_13000_2.0'
+    num_samples = 1
+    elapsed_time = 900
     dt = 0.01
     dim = 1
     noise = 0.1
@@ -123,10 +124,10 @@ if __name__ == '__main__':
     traj = np.transpose(traj, (2,3,1,0))
     traj = traj.squeeze(axis=3)
     
-    train_traj = traj[:, :, :num_samples-1]
-    test_traj = traj[:, :, -1]
+    train_traj = traj[:5000, :, :]
+    test_traj = traj[5000:, :, -1]
     
-    import pdb;pdb.set_trace() 
+    # import pdb;pdb.set_trace() 
 
     switch_to_mlfluids_src_dir()
     import util, config
@@ -136,12 +137,12 @@ if __name__ == '__main__':
     import MESN
     from MESN import MultiEchoStateNetwork
     trained_model_params = { 
-        "initLen"           : 0, 
+        "initLen"           : 200, 
         "resSize"           : 2000, 
         "partial_know"      : False, 
         "noise"             : 1e-2, 
-        "density"           : 1e-1, 
-        "spectral_radius"   : 1.0, 
+        "density"           : 5e-1, 
+        "spectral_radius"   : 3.5, 
         "leaking_rate"      : 0.2, 
         "input_scaling"     : 0.8, 
         "ridgeReg"          : 1.0, 
@@ -150,17 +151,18 @@ if __name__ == '__main__':
     mesn = MultiEchoStateNetwork(loaddata = train_traj, **trained_model_params)
     mesn.train()
     mesn.test(testing_data = test_traj)
-    traj_est = mesn.v_
-    traj_actual = mesn.v_tgt_.transpose()
+    traj_est = mesn.v_.T
+    traj_actual = mesn.v_tgt_
     
     util.save_data(traj_est, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '.est'))
     util.save_data(traj_actual, os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '.actual'))
     
-    import pdb;pdb.set_trace()
+    # import pdb;pdb.set_trace()
     plt.figure()
-    plt.scatter(traj_est[:100,1], traj_est[:100,1], color='b')
-    plt.scatter(traj_actual[:100,1], traj_actual[:100,1], color='r') 
-    plt.savefig(config.RESULTS_PATH_DIR, experiment_prefix + '_traj.compare')
+    plt.scatter(traj_est[:100,0], traj_est[:100,1], color='b')
+    plt.scatter(traj_actual[:100,0], traj_actual[:100,1], color='r') 
+    plt.savefig(os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj.compare.jpg'))
 
-
+    mesn.plot(length=5000, name=os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj_ts.compare'))
+    
 
