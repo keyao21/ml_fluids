@@ -77,7 +77,7 @@ class MultiEchoStateNetwork(EchoStateNetwork):
         # convert one chunk of data from observation space to reservoir space 
         u = self.data[ : self.trainLen, :, data_chunk_idx]
         v_tgt = self.data[ self.initLen+1 : self.trainLen+1, :, data_chunk_idx]
-
+        # import pdb;pdb.set_trace()
         # Sample training states (r) data
         r_chunk = np.zeros((1+self.inSize+self.resSize, self.trainLen-self.initLen+1)) 
         r_t = np.zeros((self.resSize,1))
@@ -124,7 +124,6 @@ class MultiEchoStateNetwork(EchoStateNetwork):
         
         """
         logging.info("Training...")
-        import pdb;pdb.set_trace()
         self.P = np.dot(np.dot(self.v_tgt.T,self.r.T), linalg.inv(np.dot(self.r,self.r.T) + \
             self.ridgeReg*np.eye(1+self.inSize+self.resSize) ) )
 

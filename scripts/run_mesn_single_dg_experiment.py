@@ -110,14 +110,14 @@ def load_trajectories(experiment_prefixes, num_samples, elapsed_time, dt, dim, n
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--spectral_radius', const=3.5, type=float)
-    parser.add_argument('--resSize', const=2000, type=int)
-    parser.add_argument('--training_length', const=7000, type=int)
-    parser.add_argument('--init_length', const=200, type=int)
-    parser.add_argument('--ridge_reg', const=1.0, type=float)
-    parser.add_argument('--density', const=0.5, type=float)
-    parser.add_argument('--input_scaling', const=0.5, type=float)
-    parser.add_argument('--leaking_rate', const=0.0, type=float)
+    parser.add_argument('--spectral_radius', nargs='?',const=3.5, type=float)
+    parser.add_argument('--resSize', nargs='?',const=5000, type=int)
+    parser.add_argument('--training_length', nargs='?',const=7000, type=int)
+    parser.add_argument('--init_length', nargs='?',const=1000, type=int)
+    parser.add_argument('--ridge_reg', nargs='?',const=1.0, type=float)
+    parser.add_argument('--density', nargs='?',const=0.5, type=float)
+    parser.add_argument('--input_scaling', nargs='?',const=0.5, type=float)
+    parser.add_argument('--leaking_rate', nargs='?',const=0.0, type=float)
     parser.add_argument('--id', type=int)
     args = parser.parse_args()
     # spectral_radius = args.spectral_radius
@@ -131,10 +131,11 @@ if __name__ == '__main__':
     switch_to_qgftle_src_dir() 
     import compare_trajectories
     # experiment_prefix = 'QGds0.01di0.05dm0.03p0.5rs5000sr1.4dens0.5lr0.0insc0.1reg1.0_id0'
-    experiment_prefix = 'dgsf_0.01_200_100_0.1_0.2_1000_2.0'
-    num_samples = 1
-    elapsed_time = 99
-    dt = 0.01
+    # experiment_prefix = 'dgsf_0.1_200_100_0.1_0.2_13000_2.0'
+    experiment_prefix = 'dgsf_0.05_200_100_0.1_0.2_100_2.0_id0'
+    num_samples = 30
+    elapsed_time = 199
+    dt = 0.05
     dim = 0
     noise = 0.1
     trajectories = load_trajectories([experiment_prefix], num_samples, elapsed_time, dt, dim, noise)
@@ -180,6 +181,6 @@ if __name__ == '__main__':
     plt.scatter(traj_est[:100,0], traj_est[:100,1], color='b')
     plt.scatter(traj_actual[:100,0], traj_actual[:100,1], color='r') 
     plt.savefig(os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj_{0}.compare.jpg'.format(args.id )))
-    mesn.plot(length=5000, name=os.path.join(config.RESULTS_PATH_DIR, experiment_prefix + '_traj_ts_{0}.compare'.format(args.id )))
+    mesn.plot(length=3000, name=os.path.join(config.RESULTS_PATH_DIR, 'initLen{1}rs{2}den{3:.2f}sr{4:.2f}lr{5:.2f}reg{6:.2f}_traj_ts_{0}.compare'.format(args.id, args.init_length, args.resSize, args.density, args.spectral_radius, args.leaking_rate, args.input_scaling, args.ridge_reg )))
     
 

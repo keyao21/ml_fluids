@@ -148,9 +148,9 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, init_
         "ridgeReg"          : ridge_reg, 
         "mute"              : False 
     }
-    testing_length = 10000
-    dt = 0.01
-    elapsedTime = 2000
+    testing_length = 4000
+    dt = 0.05
+    elapsedTime = 500
     xct = 200
     yct = 100
     amp = 0.1

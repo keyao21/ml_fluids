@@ -11,9 +11,9 @@ def main():
     ridge_regs = [1]
 
     # TESTINGGGGG######
-    resSizes = [1000]# 
+    resSizes = [100]# 
     spectral_radiuses = [2.0]
-    training_lengths = [10000]
+    training_lengths = [5000]
     init_lengths = [0]
     ridge_regs = [1e-1]
     ################################
