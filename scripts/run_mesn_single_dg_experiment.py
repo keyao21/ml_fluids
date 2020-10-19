@@ -167,7 +167,7 @@ if __name__ == '__main__':
         "ridgeReg"          : args.ridge_reg, 
         "mute"              : False 
     }
-    mesn = MultiEchoStateNetwork(loaddata = train_traj, **trained_model_params)
+    mesn = MultiEchoStateNetwork(loaddata = train_traj, **trained_model_params, model_id=args.id)
     mesn.train()
     mesn.test(testing_data = test_traj)
     traj_est = mesn.v_.T

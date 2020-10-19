@@ -15,7 +15,7 @@ from multiprocessing import Pool
 import pickle 
 
 class MultiEchoStateNetwork(EchoStateNetwork):
-    def __init__(self, loaddata, initLen=0, resSize=300, partial_know=True, noise=0, 
+    def __init__(self, loaddata, model_id=0, initLen=0, resSize=300, partial_know=True, noise=0, 
                 density=0.05, spectral_radius=1.0, leaking_rate=0.0, input_scaling=1.0, ridgeReg=0, mute=False):
         """
         Major changes in this derived class: 
@@ -91,13 +91,15 @@ class MultiEchoStateNetwork(EchoStateNetwork):
                 r_chunk[:,t_+1] = np.vstack((1,u[t].reshape(self.inSize,1), r_t)).reshape(self.inSize+self.resSize+1)
                 t_ += 1
 
-        with open('MESN_data/id{0}.pkl'.format(data_chunk_idx), 'wb') as f:
+        with open('MESN_data/model_id{0}/id{1}.pkl'.format(self.model_id, data_chunk_idx), 'wb') as f:
             pickle.dump(r_chunk, f)
 
     def initialize(self): 
         """This is a reimplementation of ESN object initiation to account for multiple input samples"""
         logging.info("Initializing model...")
         print("Initializing...") 
+        util.set_up_dir('MESN_data')
+        util.set_up_dir('MESN_data/model_id{0}/'.format(self.model_id))
         # import pdb;pdb.set_trace() 
         # pool = Pool(processes=self.data.shape[-1])
         # idxs = [i for i in range(self.data.shape[-1])]
@@ -107,7 +109,7 @@ class MultiEchoStateNetwork(EchoStateNetwork):
         
         r_chunks = np.zeros((1+self.inSize+self.resSize, self.trainLen-self.initLen+1, self.data.shape[-1])) 
         for data_chunk_idx in range(self.data.shape[-1]):
-            with open('MESN_data/id{0}.pkl'.format(data_chunk_idx), 'rb') as f:
+            with open('MESN_data/model_id{0}/id{1}.pkl'.format(self.model_id, data_chunk_idx), 'rb') as f:
                 r_chunk = pickle.load(f)
                 r_chunks[:,:,data_chunk_idx] = r_chunk
         self.r = np.hstack([r_chunks[:,1:,i] for i in range(self.data.shape[-1])] )
