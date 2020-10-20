@@ -145,7 +145,7 @@ if __name__ == '__main__':
     
     train_traj = traj[:args.training_length , :, :]
     test_traj = traj[args.training_length :, :, -1]
-    
+     
     # import pdb;pdb.set_trace() 
 
     switch_to_mlfluids_src_dir()

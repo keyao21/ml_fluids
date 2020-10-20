@@ -57,6 +57,7 @@ class MultiEchoStateNetwork(EchoStateNetwork):
         self.input_scaling = input_scaling
         self.ridgeReg = ridgeReg
         self.mute = mute # toggle for print statements
+        self.model_id = model_id
         seed = np.random.seed(42)
 
 
