@@ -6,13 +6,13 @@ from PIL import Image
 
 def main(): 
     
-    resSizes = [2000, 1000]
-    spectral_radiuses = [1.0, 0.8, 1.2]
+    resSizes = [1000, 4000]
+    spectral_radiuses = [3.0,5.0]
     training_lengths = [3000]
-    init_lengths = [ 500 ]# [3000,4000, 4400,4800]
-    ridge_regs = [1]
-    densities = [0.5]
-    leaking_rates = [0.0]
+    init_lengths = [ 500, 1000 ]# [3000,4000, 4400,4800]
+    ridge_regs = [1, 1e-2]
+    densities = [0.5, 0.2]
+    leaking_rates = [0.0, 0.5]
     input_scalings = [0.5]    
 
     processes = ()
