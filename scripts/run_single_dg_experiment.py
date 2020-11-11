@@ -228,6 +228,21 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, init_
         import generate_velocity_fields 
         generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
+
+
+    for params_key, params_dict in qgftle_params_dict.items():
+        # ensure correct directory
+        switch_to_qgftle_src_dir()
+        # a. generate velcoity fields
+        # import generate_velocity_fields
+        # generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS'] )
+        # b. generate ftle mappings
+        import generate_FTLE_mapping
+        generate_FTLE_mapping.generate_mapping_files( **params_dict['GENERATE_FTLE_MAPPING'] )
+        # c. gerenate ftle files
+        import generate_FTLE_fields 
+        generate_FTLE_fields.generate_FTLE_fields( **params_dict['GENERATE_FTLE_FIELDS'] )
+
     # for params_key, params_dict in qgftle_params_dict.items(): 
     #     # generate velocity fields 
     #     import generate_velocity_fields 
