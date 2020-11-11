@@ -228,10 +228,10 @@ def run_experiment_without_ftle(resSize, spectral_radius, training_length, init_
         import generate_velocity_fields 
         generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
-    for params_key, params_dict in qgftle_params_dict.items(): 
-        # generate velocity fields 
-        import generate_velocity_fields 
-        generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
+    # for params_key, params_dict in qgftle_params_dict.items(): 
+    #     # generate velocity fields 
+    #     import generate_velocity_fields 
+    #     generate_velocity_fields.generate_velocity_fields( **params_dict['GENERATE_VELOCITY_FIELDS']) 
 
     
 
@@ -265,6 +265,6 @@ if __name__ == '__main__':
     supdata[ (resSize, spectral_radius, training_length, init_length, ridge_reg) ] = data
     data_df = pd.DataFrame.from_dict(supdata)
     data_df.to_pickle(os.path.join('./experiments/', 
-              f"dg_sr{spectral_radius:.1f}res{resSize}trained{training_length-init_length}ridge{ridge_reg}"))
+              f"dg_sr{spectral_radius:.1f}res{resSize}trained{training_length-init_length}ridge{ridge_reg}id{unique_id}"))
     # import pdb;pdb.set_trace()
     print('done.')
