@@ -4,10 +4,10 @@ from itertools import product
 
 def main():
 
-    resSizes = [5000,6000,7000]
-    spectral_radiuses = [1.5,2.5,3.0,4.0,5.0]
+    resSizes = [5000]
+    spectral_radiuses = [2.3]# ,3.0,4.0]
     training_lengths = [2000]
-    init_lengths = [1000]
+    init_lengths = [0,300,600]
     ridge_regs = [1]
 
     # TESTINGGGGG######

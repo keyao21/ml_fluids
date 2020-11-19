@@ -157,7 +157,7 @@ def run_experiment_without_ftle(resSize, spectral_radius, noise=1e-2, density=1e
         
     # these actually don't matter because they are only used for FTLE calculation
     mapped_dt = 5
-    iters = 10
+    iters = 10000
 
     stream_function_prefix = \
         f"QGds{ds:.2f}di{di:.2f}dm{dm:.2f}p{pertamp:.1f}rs{resSize}sr{spectral_radius:.1f}dens{density:.1f}lr{leaking_rate:.1f}insc{input_scaling:.1f}reg{ridgeReg:.1f}"
